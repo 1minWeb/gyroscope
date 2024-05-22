@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gyroscope Ball Animation</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+        #animatedElement {
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #ff7f50, #ff6347, #ff4500);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.1s;
+        }
+    </style>
+</head>
+<body>
+    <div id="animatedElement"></div>
+    <script>
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', handleOrientation, true);
+        } else {
+            alert("DeviceOrientation is not supported by your browser.");
+        }
+
+        function handleOrientation(event) {
+            const alpha = event.alpha; // Rotation around the z-axis
+            const beta = event.beta;   // Rotation around the x-axis
+            const gamma = event.gamma; // Rotation around the y-axis
+
+            const element = document.getElementById('animatedElement');
+            element.style.transform = `rotateX(${beta}deg) rotateY(${gamma}deg) rotateZ(${alpha}deg)`;
+        }
+    </script>
+</body>
+</html>
