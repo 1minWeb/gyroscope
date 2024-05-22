@@ -28,7 +28,6 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            transition: transform 0.1s;
         }
         .hole {
             width: 60px;
@@ -39,31 +38,11 @@
         }
         #score {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             font-size: 24px;
             color: #333;
-        }
-        #controls {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-        }
-        .control-btn {
-            width: 50px;
-            height: 50px;
-            background-color: #3498db;
-            color: white;
-            font-size: 24px;
-            border: none;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
         }
     </style>
 </head>
@@ -75,12 +54,6 @@
         <div class="hole" style="bottom: 10px; left: 10px;"></div>
         <div class="hole" style="bottom: 10px; right: 10px;"></div>
         <div id="score">Score: 0</div>
-        <div id="controls">
-            <button class="control-btn" id="up">↑</button>
-            <button class="control-btn" id="left">←</button>
-            <button class="control-btn" id="down">↓</button>
-            <button class="control-btn" id="right">→</button>
-        </div>
     </div>
     <script>
         let score = 0;
@@ -90,27 +63,23 @@
         const holes = document.querySelectorAll('.hole');
         const ballRadius = 25; // Half of ball's width/height
         const holeRadius = 30; // Half of hole's width/height
-        const step = 10; // Movement step size
 
         if (window.DeviceOrientationEvent) {
             window.addEventListener('deviceorientation', handleOrientation, true);
         } else {
-            alert("DeviceOrientation is not supported by your browser. Use the on-screen buttons to play.");
+            alert("DeviceOrientation is not supported by your browser.");
         }
 
         function handleOrientation(event) {
-            const beta = event.beta;   // Rotation around the x-axis
-            const gamma = event.gamma; // Rotation around the y-axis
+            const beta = event.beta;   // Rotation around the x-axis (tilting forward/backward)
+            const gamma = event.gamma; // Rotation around the y-axis (tilting left/right)
 
-            // Map beta and gamma to the position on the screen
-            const x = (gamma / 90) * (window.innerWidth / 2) + (window.innerWidth / 2);
-            const y = (beta / 90) * (window.innerHeight / 2) + (window.innerHeight / 2);
+            // Calculate the position of the ball
+            const x = (gamma / 45) * (gameArea.clientWidth / 2) + (gameArea.clientWidth / 2) - ballRadius;
+            const y = (beta / 45) * (gameArea.clientHeight / 2) + (gameArea.clientHeight / 2) - ballRadius;
 
-            moveBallTo(x, y);
-        }
-
-        function moveBallTo(x, y) {
-            ball.style.transform = `translate(${x - ballRadius}px, ${y - ballRadius}px)`;
+            ball.style.left = `${x}px`;
+            ball.style.top = `${y}px`;
 
             // Check for collision with holes
             holes.forEach(hole => {
@@ -125,23 +94,11 @@
                     scoreElement.textContent = `Score: ${score}`;
 
                     // Reset ball to the center
-                    ball.style.transform = `translate(${window.innerWidth / 2 - ballRadius}px, ${window.innerHeight / 2 - ballRadius}px)`;
+                    ball.style.left = `${gameArea.clientWidth / 2 - ballRadius}px`;
+                    ball.style.top = `${gameArea.clientHeight / 2 - ballRadius}px`;
                 }
             });
         }
-
-        function moveBall(xChange, yChange) {
-            const ballRect = ball.getBoundingClientRect();
-            const newX = ballRect.left + ballRadius + xChange;
-            const newY = ballRect.top + ballRadius + yChange;
-
-            moveBallTo(newX, newY);
-        }
-
-        document.getElementById('up').addEventListener('click', () => moveBall(0, -step));
-        document.getElementById('down').addEventListener('click', () => moveBall(0, step));
-        document.getElementById('left').addEventListener('click', () => moveBall(-step, 0));
-        document.getElementById('right').addEventListener('click', () => moveBall(step, 0));
     </script>
 </body>
 </html>
