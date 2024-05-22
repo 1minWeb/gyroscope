@@ -84,7 +84,7 @@
 
             ball.style.left = `${Math.min(Math.max(0, x), gameArea.clientWidth - 2 * ballRadius)}px`;
             ball.style.top = `${Math.min(Math.max(0, y), gameArea.clientHeight - 2 * ballRadius)}px`;
-
+console.log(x,y,gamma, beta, ball.style.left, ball.style.right);
             // Check for collision with holes
             holes.forEach(hole => {
                 const holeRect = hole.getBoundingClientRect();
